@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:17
+    container_name: accounts-payables-system-springboot-db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-storage:/var/lib/postgresql/data
+    networks:
+      - accounts-payables-system-network
+
+  springboot:
+    container_name: accounts-payables-system-springboot-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        JAVA_VERSION: 21
+        GRADLE_VERSION: 8.11
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - accounts-payables-system-network
+
+volumes:
+  postgres-storage:
+    driver: local
+
+networks:
+  accounts-payables-system-network:
+    external: true
