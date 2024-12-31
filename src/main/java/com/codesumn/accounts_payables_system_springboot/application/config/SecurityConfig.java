@@ -1,6 +1,6 @@
 package com.codesumn.accounts_payables_system_springboot.application.config;
 
-import com.codesumn.accounts_payables_system_springboot.application.filters.JwtAuthenticationFilter;
+import com.codesumn.accounts_payables_system_springboot.domain.inbound.JwtAuthenticationFilterPort;
 import com.codesumn.accounts_payables_system_springboot.shared.exceptions.handlers.CustomAccessDeniedHandler;
 import com.codesumn.accounts_payables_system_springboot.shared.exceptions.handlers.CustomAuthenticationHandler;
 import org.springframework.context.annotation.Bean;
@@ -21,16 +21,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationFilterPort jwtFilterPort;
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final CustomAuthenticationHandler authenticationEntryPoint;
 
     public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthFilter,
+            JwtAuthenticationFilterPort jwtFilterPort,
             CustomAccessDeniedHandler accessDeniedHandler,
             CustomAuthenticationHandler authenticationEntryPoint
     ) {
-        this.jwtAuthFilter = jwtAuthFilter;
+        this.jwtFilterPort = jwtFilterPort;
         this.accessDeniedHandler = accessDeniedHandler;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilterPort.getFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

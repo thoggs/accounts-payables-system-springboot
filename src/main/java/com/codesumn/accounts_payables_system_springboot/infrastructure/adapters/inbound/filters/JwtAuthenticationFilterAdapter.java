@@ -1,9 +1,10 @@
-package com.codesumn.accounts_payables_system_springboot.application.filters;
+package com.codesumn.accounts_payables_system_springboot.infrastructure.adapters.inbound.filters;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.codesumn.accounts_payables_system_springboot.application.config.EnvironConfig;
+import com.codesumn.accounts_payables_system_springboot.domain.inbound.JwtAuthenticationFilterPort;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,13 +21,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilterAdapter extends OncePerRequestFilter implements JwtAuthenticationFilterPort {
 
     private final UserDetailsService userDetailsService;
     private final String jwtSecret = EnvironConfig.JWT_SECRET;
 
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilterAdapter(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    public OncePerRequestFilter getFilter() {
+        return this;
     }
 
     @Override
