@@ -1,12 +1,12 @@
 package com.codesumn.accounts_payables_system_springboot.shared.exceptions.handlers;
 
-import codesumn.com.marketplace_backend.application.dtos.auth.ErrorResponseDto;
-import codesumn.com.marketplace_backend.application.dtos.record.MetadataRecordDto;
-import codesumn.com.marketplace_backend.application.dtos.response.ErrorMessageDto;
-import codesumn.com.marketplace_backend.shared.exceptions.errors.CustomUnauthorizedException;
-import codesumn.com.marketplace_backend.shared.exceptions.errors.EmailAlreadyExistsException;
-import codesumn.com.marketplace_backend.shared.exceptions.errors.EnumValidationException;
-import codesumn.com.marketplace_backend.shared.exceptions.errors.ResourceNotFoundException;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.errors.ErrorMessageDto;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.records.errors.ErrorResponseDto;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.records.metadata.MetadataRecordDto;
+import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.CustomUnauthorizedException;
+import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.EmailAlreadyExistsException;
+import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.EnumValidationException;
+import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

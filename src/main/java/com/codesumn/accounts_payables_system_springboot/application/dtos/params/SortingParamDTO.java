@@ -8,6 +8,4 @@ import lombok.Setter;
 public class SortingParamDTO {
     private String id;
     private boolean desc;
-
 }
-
