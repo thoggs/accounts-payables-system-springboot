@@ -1,4 +1,4 @@
-package com.codesumn.accounts_payables_system_springboot.application.dtos.response;
+package com.codesumn.accounts_payables_system_springboot.application.dtos.records.pagination;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

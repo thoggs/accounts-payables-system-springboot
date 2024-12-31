@@ -1,6 +1,7 @@
-package com.codesumn.accounts_payables_system_springboot.application.dtos.response;
+package com.codesumn.accounts_payables_system_springboot.application.dtos.records.response;
 
-import codesumn.com.marketplace_backend.application.dtos.record.MetadataRecordDto;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.records.metadata.MetadataRecordDto;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.errors.ErrorMessageDto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

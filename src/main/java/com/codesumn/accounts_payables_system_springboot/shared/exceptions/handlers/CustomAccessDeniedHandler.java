@@ -1,8 +1,8 @@
 package com.codesumn.accounts_payables_system_springboot.shared.exceptions.handlers;
 
-import codesumn.com.marketplace_backend.application.dtos.auth.ErrorResponseDto;
-import codesumn.com.marketplace_backend.application.dtos.record.MetadataRecordDto;
-import codesumn.com.marketplace_backend.application.dtos.response.ErrorMessageDto;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.errors.ErrorMessageDto;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.records.errors.ErrorResponseDto;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.records.metadata.MetadataRecordDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package com.codesumn.accounts_payables_system_springboot.application.dtos.response;
+package com.codesumn.accounts_payables_system_springboot.application.dtos.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
