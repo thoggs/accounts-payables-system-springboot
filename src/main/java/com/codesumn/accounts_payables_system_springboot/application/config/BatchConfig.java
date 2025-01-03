@@ -11,18 +11,17 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public class ImportAccountsJobConfig {
+public class BatchConfig {
 
     @Bean
     public Job importAccountsJob(
             JobRepository jobRepository,
-            @Qualifier("importAccountsStep") Step importAccountsStep
+            Step importAccountsStep
     ) {
         return new JobBuilder("importAccountsJob", jobRepository)
                 .start(importAccountsStep)
@@ -37,7 +36,7 @@ public class ImportAccountsJobConfig {
             AccountItemWriter accountItemWriter
     ) {
         return new StepBuilder("importAccountsStep", jobRepository)
-                .<AccountModel, AccountModel>chunk(10, transactionManager)
+                .<AccountModel, AccountModel>chunk(200, transactionManager)
                 .reader(accountItemReader)
                 .writer(accountItemWriter)
                 .build();
