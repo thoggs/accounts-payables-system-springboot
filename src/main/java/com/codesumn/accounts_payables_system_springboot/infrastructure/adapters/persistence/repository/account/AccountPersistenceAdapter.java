@@ -24,10 +24,16 @@ public class AccountPersistenceAdapter implements AccountPersistencePort {
     }
 
     @Override
-    public Page<AccountModel> findAll(String searchTerm, Pageable pageable) {
-        Specification<AccountModel> spec = (searchTerm != null && !searchTerm.isEmpty())
-                ? AccountSpecifications.searchWithTerm(searchTerm)
-                : null;
+    public Page<AccountModel> findAll(String searchTerm, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        Specification<AccountModel> spec = Specification.where(null);
+
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            spec = spec.and(AccountSpecifications.searchWithTerm(searchTerm));
+        }
+
+        if (startDate != null && endDate != null) {
+            spec = spec.and(AccountSpecifications.filterPaidBetweenDates(startDate, endDate));
+        }
 
         return accountJpaRepository.findAll(spec, pageable);
     }

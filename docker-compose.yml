@@ -35,4 +35,4 @@ volumes:
 
 networks:
   accounts-payables-system-network:
-    external: true
+    driver: bridge
