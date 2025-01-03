@@ -29,6 +29,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-batch")
 	implementation("com.auth0:java-jwt:${property("javaJwtVersion")}")
 	implementation("io.github.cdimascio:dotenv-java:${property("javaDotenvVersion")}")
 	implementation("net.datafaker:datafaker:${property("datafakerVersion")}")

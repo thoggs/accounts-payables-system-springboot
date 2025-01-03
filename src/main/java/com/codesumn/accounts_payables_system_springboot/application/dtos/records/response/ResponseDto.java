@@ -19,7 +19,8 @@ public record ResponseDto<T>(
     public ResponseDto(
             @JsonProperty("data") T data,
             @JsonProperty("success") Boolean success,
-            @JsonProperty("metadata") List<MetadataRecordDto> metadata) {
+            @JsonProperty("metadata") List<MetadataRecordDto> metadata
+    ) {
         this.data = data;
         this.success = success;
         this.metadata = metadata;
@@ -27,7 +28,8 @@ public record ResponseDto<T>(
 
     public static <T> ResponseDto<T> create(
             @JsonProperty("data") T data,
-            @JsonProperty("metadata") List<MetadataRecordDto> metadata) {
+            @JsonProperty("metadata") List<MetadataRecordDto> metadata
+    ) {
         if (metadata == null || metadata.isEmpty()) {
             metadata = Collections.singletonList(
                     new MetadataRecordDto(
@@ -53,6 +55,22 @@ public record ResponseDto<T>(
 
     public static ResponseDto<List<Object>> createWithoutData() {
         return createWithoutData(null);
+    }
+
+    public static ResponseDto<Integer> createWithImportedCount(int importedCount) {
+        ErrorMessageDto infoMessage = new ErrorMessageDto(
+                "INFO",
+                importedCount + " items were imported successfully.",
+                null
+        );
+
+        MetadataRecordDto metadataRecord = new MetadataRecordDto(List.of(infoMessage));
+
+        return new ResponseDto<>(
+                importedCount,
+                true,
+                List.of(metadataRecord)
+        );
     }
 
     @Override
