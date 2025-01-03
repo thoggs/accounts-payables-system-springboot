@@ -61,7 +61,7 @@ public class SpringBatchAccountCsvImportAdapter implements AccountCsvImportPort 
         } catch (CsvImportException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao importar CSV via Spring Batch", e);
+            throw new RuntimeException("Error importing CSV via Spring Batch", e);
         }
     }
 
