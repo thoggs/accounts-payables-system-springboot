@@ -3,10 +3,7 @@ package com.codesumn.accounts_payables_system_springboot.shared.exceptions.handl
 import com.codesumn.accounts_payables_system_springboot.application.dtos.errors.ErrorMessageDto;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.errors.ErrorResponseDto;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.metadata.MetadataRecordDto;
-import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.CustomUnauthorizedException;
-import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.EmailAlreadyExistsException;
-import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.EnumValidationException;
-import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.ResourceNotFoundException;
+import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -245,5 +242,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponseDto<List<Object>> errorResponse = ErrorResponseDto
                 .createWithoutData(Collections.singletonList(metadata));
         return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(CsvImportException.class)
+    public ResponseEntity<ErrorResponseDto<List<Object>>> handleCsvImportException(CsvImportException ex) {
+
+        List<String> errors = ex.getErrors();
+
+        List<ErrorMessageDto> errorMessages = errors.stream()
+                .map(msg -> new ErrorMessageDto(
+                        "CSV_IMPORT_ERROR",
+                        msg,
+                        null
+                ))
+                .toList();
+
+        MetadataRecordDto metadataRecord = new MetadataRecordDto(errorMessages);
+
+        ErrorResponseDto<List<Object>> errorResponse = ErrorResponseDto
+                .createWithoutData(List.of(metadataRecord));
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
