@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,5 +65,28 @@ public class AccountController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto<AccountRecordDto>> destroy(@PathVariable UUID id) {
         return new ResponseEntity<>(accountServicePort.deleteAccount(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ResponseDto<AccountRecordDto>> updateStatus(
+            @PathVariable UUID id,
+            @RequestParam String status
+    ) {
+        return new ResponseEntity<>(accountServicePort.updateAccountStatus(id, status), HttpStatus.OK);
+    }
+
+    @GetMapping("/total-paid")
+    public ResponseEntity<ResponseDto<BigDecimal>> getTotalPaid(
+            @RequestParam String startDate,
+            @RequestParam String endDate
+    ) {
+        return new ResponseEntity<>(accountServicePort.getTotalPaid(startDate, endDate), HttpStatus.OK);
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<ResponseDto<List<AccountRecordDto>>> importAccounts(
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        return new ResponseEntity<>(accountServicePort.importAccounts(file), HttpStatus.CREATED);
     }
 }

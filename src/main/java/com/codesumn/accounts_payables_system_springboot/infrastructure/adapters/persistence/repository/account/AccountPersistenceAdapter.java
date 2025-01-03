@@ -8,6 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,12 +38,23 @@ public class AccountPersistenceAdapter implements AccountPersistencePort {
     }
 
     @Override
-    public void saveAccount(AccountModel accountModel) {
-        accountJpaRepository.save(accountModel);
+    public AccountModel saveAccount(AccountModel accountModel) {
+        return accountJpaRepository.save(accountModel);
     }
 
     @Override
     public void deleteAccount(AccountModel accountModel) {
         accountJpaRepository.delete(accountModel);
+    }
+
+    @Override
+    public BigDecimal calculateTotalPaid(LocalDate startDate, LocalDate endDate) {
+
+        Specification<AccountModel> spec = AccountSpecifications.filterPaidBetweenDates(startDate, endDate);
+
+        List<AccountModel> accounts = accountJpaRepository.findAll(spec);
+        return accounts.stream()
+                .map(AccountModel::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

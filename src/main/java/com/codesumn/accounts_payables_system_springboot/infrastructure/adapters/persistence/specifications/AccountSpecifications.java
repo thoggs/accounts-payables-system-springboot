@@ -4,6 +4,7 @@ import com.codesumn.accounts_payables_system_springboot.domain.models.AccountMod
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class AccountSpecifications {
 
@@ -27,5 +28,12 @@ public class AccountSpecifications {
     public static Specification<AccountModel> dueDateBetween(java.util.Date startDate, java.util.Date endDate) {
         return (root, query, cb) -> cb
                 .between(root.get("dueDate"), startDate, endDate);
+    }
+
+    public static Specification<AccountModel> filterPaidBetweenDates(LocalDate startDate, LocalDate endDate) {
+        return (root, query, cb) -> cb.and(
+                cb.equal(cb.lower(root.get("status")), "paid"),
+                cb.between(root.get("dueDate"), startDate, endDate)
+        );
     }
 }

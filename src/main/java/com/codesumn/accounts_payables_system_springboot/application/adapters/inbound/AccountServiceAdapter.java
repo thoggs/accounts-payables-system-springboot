@@ -9,6 +9,7 @@ import com.codesumn.accounts_payables_system_springboot.application.dtos.records
 import com.codesumn.accounts_payables_system_springboot.domain.models.AccountModel;
 import com.codesumn.accounts_payables_system_springboot.domain.outbound.AccountPersistencePort;
 import com.codesumn.accounts_payables_system_springboot.domain.outbound.AccountServicePort;
+import com.codesumn.accounts_payables_system_springboot.shared.enums.AccountStatusEnum;
 import com.codesumn.accounts_payables_system_springboot.shared.exceptions.errors.ResourceNotFoundException;
 import com.codesumn.accounts_payables_system_springboot.shared.parsers.SortParser;
 import jakarta.validation.constraints.NotNull;
@@ -18,10 +19,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -134,8 +138,67 @@ public class AccountServiceAdapter implements AccountServicePort {
         return ResponseDto.create(accountRecord);
     }
 
+    @Override
+    public ResponseDto<AccountRecordDto> updateAccountStatus(UUID id, String status) {
+        AccountModel account = accountPersistencePort.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        account.setStatus(AccountStatusEnum.fromValue(status));
+
+        accountPersistencePort.saveAccount(account);
+
+        AccountRecordDto accountRecord = new AccountRecordDto(
+                account.getId(),
+                account.getDueDate(),
+                account.getPaymentDate(),
+                account.getAmount(),
+                account.getDescription(),
+                account.getStatus()
+        );
+
+        return ResponseDto.create(accountRecord);
+    }
+
+    @Override
+    public ResponseDto<BigDecimal> getTotalPaid(String startDate, String endDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+
+        BigDecimal totalPaid = accountPersistencePort.calculateTotalPaid(start, end);
+        return ResponseDto.create(totalPaid);
+    }
+
+    @Override
+    public ResponseDto<List<AccountRecordDto>> importAccounts(MultipartFile file) throws IOException {
+        List<AccountModel> accounts = parseCsv(file);
+        List<AccountModel> savedAccounts = accounts.stream()
+                .map(accountPersistencePort::saveAccount)
+                .toList();
+
+        List<AccountRecordDto> accountRecords = savedAccounts.stream()
+                .map(account -> new AccountRecordDto(
+                        account.getId(),
+                        account.getDueDate(),
+                        account.getPaymentDate(),
+                        account.getAmount(),
+                        account.getDescription(),
+                        account.getStatus()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseDto.create(accountRecords);
+    }
+
+    private List<AccountModel> parseCsv(MultipartFile file) throws IOException {
+        // TODO: implement parse CSV
+        return Collections.emptyList();
+    }
+
     @NotNull
-    private ResponseDto<AccountRecordDto> getAccountRecordDtoResponseDto(AccountInputRecordDto accountInput, AccountModel existingAccount) {
+    private ResponseDto<AccountRecordDto> getAccountRecordDtoResponseDto(
+            AccountInputRecordDto accountInput,
+            AccountModel existingAccount
+    ) {
         existingAccount.setDueDate(accountInput.dueDate());
         existingAccount.setPaymentDate(accountInput.paymentDate());
         existingAccount.setAmount(accountInput.amount());
