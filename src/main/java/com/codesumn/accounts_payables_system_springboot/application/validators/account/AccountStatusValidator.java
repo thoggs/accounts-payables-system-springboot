@@ -1,4 +1,4 @@
-package com.codesumn.accounts_payables_system_springboot.application.validators;
+package com.codesumn.accounts_payables_system_springboot.application.validators.account;
 
 import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountChangeStatusParamDTO;
 import com.codesumn.accounts_payables_system_springboot.shared.enums.AccountStatusEnum;

@@ -1,6 +1,6 @@
-package com.codesumn.accounts_payables_system_springboot.application.validators;
+package com.codesumn.accounts_payables_system_springboot.application.validators.account;
 
-import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountRequestTotalPaidParamDTO;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountTotalPaidParamDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 public class AccountRequestTotalPaidValidator
-        implements ConstraintValidator<ValidTotalPaidRequest, AccountRequestTotalPaidParamDTO> {
+        implements ConstraintValidator<ValidTotalPaidRequest, AccountTotalPaidParamDTO> {
 
     @Override
-    public boolean isValid(AccountRequestTotalPaidParamDTO value, ConstraintValidatorContext context) {
+    public boolean isValid(AccountTotalPaidParamDTO value, ConstraintValidatorContext context) {
         if (value == null) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Request body cannot be null")

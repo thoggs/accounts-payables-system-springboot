@@ -1,7 +1,8 @@
 package com.codesumn.accounts_payables_system_springboot.application.controllers;
 
 import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountChangeStatusParamDTO;
-import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountRequestTotalPaidParamDTO;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountImportParamDTO;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountTotalPaidParamDTO;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.params.FilterCriteriaParamDTO;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.account.AccountInputRecordDto;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.account.AccountRecordDto;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -82,7 +82,7 @@ public class AccountController {
 
     @GetMapping("/total-paid")
     public ResponseEntity<ResponseDto<BigDecimal>> getTotalPaid(
-            @Valid @ParameterObject @ModelAttribute AccountRequestTotalPaidParamDTO parameters
+            @Valid @ParameterObject @ModelAttribute AccountTotalPaidParamDTO parameters
     ) {
         return new ResponseEntity<>(accountServicePort.getTotalPaid(
                 parameters.getStartDate(),
@@ -92,8 +92,8 @@ public class AccountController {
 
     @PostMapping("/import")
     public ResponseEntity<ResponseDto<List<AccountRecordDto>>> importAccounts(
-            @RequestParam("file") MultipartFile file
+            @Valid @ParameterObject @ModelAttribute AccountImportParamDTO parameters
     ) throws IOException {
-        return new ResponseEntity<>(accountServicePort.importAccounts(file), HttpStatus.CREATED);
+        return new ResponseEntity<>(accountServicePort.importAccounts(parameters.getFile()), HttpStatus.CREATED);
     }
 }
