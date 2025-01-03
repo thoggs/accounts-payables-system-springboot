@@ -31,5 +31,5 @@ public interface AccountServicePort {
 
     ResponseDto<BigDecimal> getTotalPaid(String startDate, String endDate);
 
-    ResponseDto<List<AccountRecordDto>> importAccounts(MultipartFile file) throws IOException;
+    ResponseDto<Integer> importAccounts(MultipartFile file) throws IOException;
 }

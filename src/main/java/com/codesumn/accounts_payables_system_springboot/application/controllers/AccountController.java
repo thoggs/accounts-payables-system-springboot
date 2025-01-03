@@ -91,7 +91,7 @@ public class AccountController {
     }
 
     @PostMapping("/import")
-    public ResponseEntity<ResponseDto<List<AccountRecordDto>>> importAccounts(
+    public ResponseEntity<ResponseDto<Integer>> importAccounts(
             @Valid @ParameterObject @ModelAttribute AccountImportParamDTO parameters
     ) throws IOException {
         return new ResponseEntity<>(accountServicePort.importAccounts(parameters.getFile()), HttpStatus.CREATED);

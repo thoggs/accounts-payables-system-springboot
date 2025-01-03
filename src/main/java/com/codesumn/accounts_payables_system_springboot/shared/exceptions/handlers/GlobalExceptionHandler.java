@@ -182,7 +182,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         List<ErrorMessageDto> errorMessages = new ArrayList<>();
 
-        // Processar erros de campo
         errorMessages.addAll(ex
                 .getBindingResult()
                 .getFieldErrors()
@@ -190,11 +189,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(fieldError -> new ErrorMessageDto(
                         "VALIDATION_ERROR",
                         fieldError.getDefaultMessage(),
-                        fieldError.getField() // Captura o nome do campo
+                        fieldError.getField()
                 ))
                 .toList());
 
-        // Processar erros globais
         errorMessages.addAll(ex
                 .getBindingResult()
                 .getGlobalErrors()
@@ -202,7 +200,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(globalError -> new ErrorMessageDto(
                         "VALIDATION_ERROR",
                         globalError.getDefaultMessage(),
-                        globalError.getObjectName() // Usar o nome do objeto associado ao erro global
+                        globalError.getObjectName()
                 ))
                 .toList());
 

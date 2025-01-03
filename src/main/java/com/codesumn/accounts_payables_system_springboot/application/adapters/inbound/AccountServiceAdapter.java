@@ -7,6 +7,7 @@ import com.codesumn.accounts_payables_system_springboot.application.dtos.records
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.pagination.PaginationResponseDto;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.response.ResponseDto;
 import com.codesumn.accounts_payables_system_springboot.domain.models.AccountModel;
+import com.codesumn.accounts_payables_system_springboot.domain.outbound.AccountCsvImportPort;
 import com.codesumn.accounts_payables_system_springboot.domain.outbound.AccountPersistencePort;
 import com.codesumn.accounts_payables_system_springboot.domain.outbound.AccountServicePort;
 import com.codesumn.accounts_payables_system_springboot.shared.enums.AccountStatusEnum;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -36,11 +38,17 @@ public class AccountServiceAdapter implements AccountServicePort {
 
     private final AccountPersistencePort accountPersistencePort;
     private final SortParser sortParser;
+    private final AccountCsvImportPort accountCsvImportPort;
 
     @Autowired
-    public AccountServiceAdapter(AccountPersistencePort accountPersistencePort, SortParser sortParser) {
+    public AccountServiceAdapter(
+            AccountPersistencePort accountPersistencePort,
+            SortParser sortParser,
+            AccountCsvImportPort accountCsvImportPort
+    ) {
         this.accountPersistencePort = accountPersistencePort;
         this.sortParser = sortParser;
+        this.accountCsvImportPort = accountCsvImportPort;
     }
 
     @Override
@@ -169,29 +177,13 @@ public class AccountServiceAdapter implements AccountServicePort {
     }
 
     @Override
-    public ResponseDto<List<AccountRecordDto>> importAccounts(MultipartFile file) throws IOException {
-        List<AccountModel> accounts = parseCsv(file);
-        List<AccountModel> savedAccounts = accounts.stream()
-                .map(accountPersistencePort::saveAccount)
-                .toList();
+    public ResponseDto<Integer> importAccounts(MultipartFile file) throws IOException {
+        int importedCount;
+        try (InputStream is = file.getInputStream()) {
+            importedCount = accountCsvImportPort.importCsv(is);
+        }
 
-        List<AccountRecordDto> accountRecords = savedAccounts.stream()
-                .map(account -> new AccountRecordDto(
-                        account.getId(),
-                        account.getDueDate(),
-                        account.getPaymentDate(),
-                        account.getAmount(),
-                        account.getDescription(),
-                        account.getStatus()
-                ))
-                .collect(Collectors.toList());
-
-        return ResponseDto.create(accountRecords);
-    }
-
-    private List<AccountModel> parseCsv(MultipartFile file) throws IOException {
-        // TODO: implement parse CSV
-        return Collections.emptyList();
+        return ResponseDto.createWithImportedCount(importedCount);
     }
 
     @NotNull
