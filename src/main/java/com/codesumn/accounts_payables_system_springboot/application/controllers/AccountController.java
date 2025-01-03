@@ -1,5 +1,7 @@
 package com.codesumn.accounts_payables_system_springboot.application.controllers;
 
+import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountChangeStatusParamDTO;
+import com.codesumn.accounts_payables_system_springboot.application.dtos.params.AccountRequestTotalPaidParamDTO;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.params.FilterCriteriaParamDTO;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.account.AccountInputRecordDto;
 import com.codesumn.accounts_payables_system_springboot.application.dtos.records.account.AccountRecordDto;
@@ -70,17 +72,22 @@ public class AccountController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<ResponseDto<AccountRecordDto>> updateStatus(
             @PathVariable UUID id,
-            @RequestParam String status
+            @Valid @ParameterObject @ModelAttribute AccountChangeStatusParamDTO parameters
     ) {
-        return new ResponseEntity<>(accountServicePort.updateAccountStatus(id, status), HttpStatus.OK);
+        return new ResponseEntity<>(accountServicePort.updateAccountStatus(
+                id,
+                parameters.getStatus()
+        ), HttpStatus.OK);
     }
 
     @GetMapping("/total-paid")
     public ResponseEntity<ResponseDto<BigDecimal>> getTotalPaid(
-            @RequestParam String startDate,
-            @RequestParam String endDate
+            @Valid @ParameterObject @ModelAttribute AccountRequestTotalPaidParamDTO parameters
     ) {
-        return new ResponseEntity<>(accountServicePort.getTotalPaid(startDate, endDate), HttpStatus.OK);
+        return new ResponseEntity<>(accountServicePort.getTotalPaid(
+                parameters.getStartDate(),
+                parameters.getEndDate()
+        ), HttpStatus.OK);
     }
 
     @PostMapping("/import")

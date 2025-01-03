@@ -24,6 +24,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -179,18 +180,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpStatusCode status,
             @NonNull WebRequest request
     ) {
-        List<ErrorMessageDto> errorMessages = ex
+        List<ErrorMessageDto> errorMessages = new ArrayList<>();
+
+        // Processar erros de campo
+        errorMessages.addAll(ex
                 .getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(fieldError -> new ErrorMessageDto(
                         "VALIDATION_ERROR",
                         fieldError.getDefaultMessage(),
-                        fieldError.getField()))
-                .toList();
+                        fieldError.getField() // Captura o nome do campo
+                ))
+                .toList());
+
+        // Processar erros globais
+        errorMessages.addAll(ex
+                .getBindingResult()
+                .getGlobalErrors()
+                .stream()
+                .map(globalError -> new ErrorMessageDto(
+                        "VALIDATION_ERROR",
+                        globalError.getDefaultMessage(),
+                        globalError.getObjectName() // Usar o nome do objeto associado ao erro global
+                ))
+                .toList());
+
         MetadataRecordDto metadata = new MetadataRecordDto(errorMessages);
         ErrorResponseDto<List<Object>> errorResponse = ErrorResponseDto
                 .createWithoutData(Collections.singletonList(metadata));
+
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
