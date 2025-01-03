@@ -165,6 +165,16 @@ Roles disponíveis: `user`, `admin`, `manager`, `guest`.
 
 - **POST /api/accounts/import**: importa registros de contas a partir de um arquivo CSV.
 
+#### **Exemplo de Arquivo CSV para Importação**
+
+Para importar registros de contas através do endpoint `/api/accounts/import`, o arquivo CSV deve seguir o seguinte formato:
+
+```csv
+2025-01-09,2025-01-14,500.75,Payment for January utilities,PAID
+2025-02-10,2025-02-15,300.50,Payment for February rent,PENDING
+2025-03-11,,200.00,Payment for March services,UNPAID
+```
+
 ### **Health** (Status)
 
 - **GET /health/check**: retorna o status da aplicação.
