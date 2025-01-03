@@ -3,6 +3,7 @@ extra["javaDotenvVersion"] = "3.1.0"
 extra["datafakerVersion"] = "2.4.2"
 extra["flywayCoreVersion"] = "11.1.0"
 extra["springdocVersion"] = "2.7.0"
+extra["batchIntegrationVersion"] = "5.2.1"
 
 plugins {
 	java
@@ -36,6 +37,7 @@ dependencies {
 	implementation("org.flywaydb:flyway-core:${property("flywayCoreVersion")}")
 	implementation("org.flywaydb:flyway-database-postgresql:${property("flywayCoreVersion")}")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("springdocVersion")}")
+	implementation("org.springframework.batch:spring-batch-integration:${property("batchIntegrationVersion")}")
 
 	runtimeOnly("org.postgresql:postgresql")
 
