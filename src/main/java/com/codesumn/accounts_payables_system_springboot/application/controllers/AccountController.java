@@ -40,7 +40,9 @@ public class AccountController {
                 parameters.getPage(),
                 parameters.getPageSize(),
                 parameters.getSearchTerm(),
-                parameters.getSortField()
+                parameters.getSortField(),
+                parameters.getStartDate(),
+                parameters.getEndDate()
         ), HttpStatus.OK);
     }
 

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface AccountPersistencePort {
 
-    Page<AccountModel> findAll(String searchTerm, Pageable pageable);
+    Page<AccountModel> findAll(String searchTerm, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     Optional<AccountModel> findById(UUID id);
 

@@ -56,7 +56,9 @@ public class AccountServiceAdapter implements AccountServicePort {
             int page,
             int pageSize,
             String searchTerm,
-            String sorting
+            String sorting,
+            LocalDate startDate,
+            LocalDate endDate
     ) throws IOException {
         String decodedSorting = (sorting != null && !sorting.trim().isEmpty() && !"[]".equals(sorting))
                 ? URLDecoder.decode(sorting, StandardCharsets.UTF_8)
@@ -68,7 +70,7 @@ public class AccountServiceAdapter implements AccountServicePort {
 
         Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
 
-        Page<AccountModel> accountPage = accountPersistencePort.findAll(searchTerm, pageable);
+        Page<AccountModel> accountPage = accountPersistencePort.findAll(searchTerm, startDate, endDate, pageable);
 
         List<AccountRecordDto> accountRecords = accountPage.getContent().stream()
                 .map(account -> new AccountRecordDto(

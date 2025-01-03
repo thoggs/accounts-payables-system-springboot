@@ -154,16 +154,20 @@ class AccountServiceAdapterTest {
         int pageSize = 2;
         String searchTerm = "test";
         String sorting = "someSortingJSON";
+        LocalDate startDate = LocalDate.of(2025, 1, 1);
+        LocalDate endDate = LocalDate.of(2025, 1, 31);
 
         when(sortParser.parseSorting(sorting)).thenReturn(Sort.by("dueDate"));
 
         AccountModel m1 = new AccountModel();
         m1.setId(UUID.randomUUID());
         m1.setDescription("Desc1");
+        m1.setDueDate(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
         AccountModel m2 = new AccountModel();
         m2.setId(UUID.randomUUID());
         m2.setDescription("Desc2");
+        m2.setDueDate(Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
         Page<AccountModel> mockedPage = new PageImpl<>(
                 List.of(m1, m2),
@@ -171,18 +175,19 @@ class AccountServiceAdapterTest {
                 2
         );
 
-        when(accountPersistencePort.findAll(eq(searchTerm), any(Pageable.class)))
+        when(accountPersistencePort.findAll(eq(searchTerm), eq(startDate), eq(endDate), any(Pageable.class)))
                 .thenReturn(mockedPage);
 
-        var result = accountServiceAdapter.getAll(page, pageSize, searchTerm, sorting);
+        var result = accountServiceAdapter.getAll(page, pageSize, searchTerm, sorting, startDate, endDate);
 
         assertThat(result.data()).hasSize(2);
         assertThat(result.data().get(0).description()).isEqualTo("Desc1");
         assertThat(result.data().get(1).description()).isEqualTo("Desc2");
 
         assertThat(result.metadata().pagination().totalPages()).isEqualTo(1L);
+
         verify(sortParser).parseSorting(sorting);
-        verify(accountPersistencePort).findAll(eq(searchTerm), any(Pageable.class));
+        verify(accountPersistencePort).findAll(eq(searchTerm), eq(startDate), eq(endDate), any(Pageable.class));
     }
 
     @Test
